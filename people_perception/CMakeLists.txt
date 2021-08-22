@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  geometry_msgs
+  control_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -75,7 +77,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-   actionlib_msgs  sensor_msgs   std_msgs
+   actionlib_msgs  sensor_msgs   std_msgs control_msgs geometry_msgs
  )
 
 ################################################
@@ -165,7 +167,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
  catkin_install_python(PROGRAMS
-  scripts/PeopleDetection_actionclient.py scripts/PeopleDetection_actionserver.py
+  scripts/PeopleDetection_actionclient.py scripts/PeopleDetection_actionserver.py scripts/HeadController_actionclient.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
