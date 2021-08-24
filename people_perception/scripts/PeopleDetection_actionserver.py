@@ -32,7 +32,7 @@ def image_acquisition():
        #read and convert image
        bridge = CvBridge()
        #read 5 frames for 3 angulation
-       for i in range(1,6):
+       for i in range(1,3):
               msg = rospy.wait_for_message('/xtion/rgb/image_raw', Image)
               image = bridge.imgmsg_to_cv2(msg, desired_encoding= "bgr8")
               s="/root/images/I"+str(i)+".jpg"
