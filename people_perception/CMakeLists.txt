@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   control_msgs
+  trajectory_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -77,7 +78,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-   actionlib_msgs  sensor_msgs   std_msgs control_msgs geometry_msgs
+   actionlib_msgs  sensor_msgs   std_msgs control_msgs geometry_msgs trajectory_msgs
  )
 
 ################################################

@@ -13,41 +13,41 @@ import datetime
 from cv_bridge import CvBridge
 import cv2 
 from sensor_msgs.msg import Image
+from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
+import control_msgs.msg 
+from trajectory_msgs.msg import JointTrajectoryPoint
 
 
 
 if __name__ == "__main__":
-        rospy.init_node('headcontrollerclient')
-        bridge = CvBridge()
-        client = actionlib.SimpleActionClient('/head_controller/point_head_action', control_msgs.msg.PointHeadAction)
+       rospy.init_node('headcontrollerclient')
+       client = actionlib.SimpleActionClient('/head_controller/follow_joint_trajectory', control_msgs.msg.FollowJointTrajectoryAction) 
+       client.wait_for_server()
+       G=FollowJointTrajectoryGoal()
+       
+       G.trajectory.joint_names.append("head_1_joint")
+       G.trajectory.joint_names.append("head_2_joint")
+      
+       print(len(G.trajectory.joint_names))
     
-        client.wait_for_server()
-        
-        ps=PointStamped()
-        ps.header.frame_id = "/base_link"
-        
-        ps.header.stamp  = rospy.Time.now()
-        ps.point.x  = 1
-        ps.point.y = 1
-        ##arbitrary distance
-        ps.point.z = 1  
+       point=[0]
+       position=[0.0 , 0.0]
+       print(len(point))
+       print(len(position))
+       msg=JointTrajectoryPoint()
+       G.trajectory.points.append(msg)
+       print(len(G.trajectory.points))
+       G.trajectory.points[0].positions.append(-0.6)
+       G.trajectory.points[0].positions.append(0.0)
+       print(len(G.trajectory.points[0].positions))
+       
+       G.trajectory.points[0].velocities.append(0.01)
+       G.trajectory.points[0].velocities.append(0.01)
+       G.trajectory.points[0].time_from_start=rospy.Duration(2)
+       G.trajectory.header.stamp =rospy.Duration(2)+rospy.Time.now()
+       client.send_goal(G)
+       client.wait_for_result()
+       print("terminate")
+       rospy.spin()
 
-        goal=PointHeadGoal()  
-        goal.pointing_frame ="/xtion_link"
-        goal.pointing_axis.x = 1.0
-        goal.pointing_axis.y = 0.0
-        goal.pointing_axis.z = 0.0
-        goal.min_duration = rospy.Duration(1)
-        goal.max_velocity = 0.25
-        goal.target = ps
-        print("there")
-        client.send_goal(goal)
-        print("sent")
-        client.wait_for_result()
-        msg = rospy.wait_for_message('/xtion/rgb/image_raw', Image)
-        image = bridge.imgmsg_to_cv2(msg, desired_encoding= "bgr8")
-        cv2.imwrite("/root/images/got2.jpg", image)
-        print("get result")
-        print(client.get_result())
-        client.cancel_all_goals()
         
