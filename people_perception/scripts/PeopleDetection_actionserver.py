@@ -47,7 +47,7 @@ def image_acquisition():
        bridge = CvBridge()
        #read 5 frames for 3 angulation
        detected_people=0
-       for i in range(1,3):
+       for i in range(1,4):
               msg = rospy.wait_for_message('/xtion/rgb/image_raw', Image)
               image = bridge.imgmsg_to_cv2(msg, desired_encoding= "bgr8")
               image=crop(image)
