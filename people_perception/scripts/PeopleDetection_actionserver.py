@@ -22,6 +22,20 @@ _as=None
 state=1
 counter=0
 
+def crop(image):
+       global state
+       th1=100
+       th2=150
+       height, width, _ = image.shape
+       print(height)
+       print(width)
+       if state==1:
+              image=image[0:width, th1:height-th1]
+       elif state==2:
+              image=image[0:width, 0:height-th2]
+       else:
+              image=image[0:width, th2:height] 
+       return image
 
 def image_acquisition():
        global counter
@@ -32,20 +46,22 @@ def image_acquisition():
        #read and convert image
        bridge = CvBridge()
        #read 5 frames for 3 angulation
+       detected_people=0
        for i in range(1,3):
               msg = rospy.wait_for_message('/xtion/rgb/image_raw', Image)
               image = bridge.imgmsg_to_cv2(msg, desired_encoding= "bgr8")
-              s="/root/images/I"+str(i)+".jpg"
-              cv2.imwrite(s, image)
-              rospy.sleep(1)
-       child_program = subprocess.Popen("/root/images/PeopleDetection.py",
-                                 shell=True,
-                                 stdout=subprocess.PIPE,
-                                 )
-       
-       detected_people = child_program.communicate()
-       print(detected_people[0]) 
-       counter=counter+int(detected_people[0])
+              image=crop(image)
+              s="/root/images/I.jpg"
+              cv2.imwrite(s, image)       
+              child_program = subprocess.Popen("/root/images/PeopleDetection.py",1,
+                                   shell=True,
+                                   stdout=subprocess.PIPE,
+                                   )
+              
+              detected_people += int(child_program.communicate()[0])
+              print(detected_people) 
+       if detected_people>0:
+            counter=counter+1
        
        
        
