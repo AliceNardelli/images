@@ -24,11 +24,10 @@ counter=0
 
 def crop(image):
        global state
-       th1=100
-       th2=150
+       th1=rospy.get_param("th1")
+       th2=rospy.get_param("th2")
        height, width, _ = image.shape
-       print(height)
-       print(width)
+      
        if state==1:
               image=image[0:width, th1:height-th1]
        elif state==2:
@@ -40,8 +39,7 @@ def crop(image):
 def image_acquisition():
        global counter
        global state
-       print("IMAGE A")
-       print(state)
+       
        
        #read and convert image
        bridge = CvBridge()
@@ -71,14 +69,14 @@ def change_state(new_state):
       global client
       
       if new_state==1 or new_state==4:
-             angle1=0.0
-             angle2=0.0
+             angle1=rospy.get_param("a_j2_s1")
+             angle2=rospy.get_param("a_j1")
       elif new_state==2:
-             angle1=0.6
-             angle2=0.0 
+             angle1=rospy.get_param("a_j2_s2")
+             angle2=rospy.get_param("a_j1")
       else:
-             angle1=-0.6
-             angle2=0.0
+             angle1=rospy.get_param("a_j2_s3")
+             angle2=rospy.get_param("a_j1")
       client.wait_for_server()
       G=FollowJointTrajectoryGoal()
        
@@ -97,10 +95,10 @@ def change_state(new_state):
       G.trajectory.header.stamp =rospy.Duration(2)+rospy.Time.now()
       client.send_goal(G)
       client.wait_for_result()
-      print("head moved")
+      #print("head moved")
       
       state=new_state
-      print(state)
+      #print(state)
 
 
                
@@ -125,6 +123,8 @@ def action_clbk(req):
                   break
 
        _res.n_people =counter
+       print("detected people:")
+       print(counter)
        _as.set_succeeded(_res) 
       
     
@@ -134,6 +134,5 @@ if __name__ == '__main__':
        rospy.init_node('talker', anonymous=True)
        _as = actionlib.SimpleActionServer('people_detection', people_perception.msg.PeopleCounterAction,execute_cb=action_clbk, auto_start=False) 
        _as.start() 
-
        client = actionlib.SimpleActionClient('/head_controller/follow_joint_trajectory', control_msgs.msg.FollowJointTrajectoryAction) 
        rospy.spin()

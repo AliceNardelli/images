@@ -22,23 +22,19 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 if __name__ == "__main__":
        rospy.init_node('headcontrollerclient')
        client = actionlib.SimpleActionClient('/head_controller/follow_joint_trajectory', control_msgs.msg.FollowJointTrajectoryAction) 
-       client.wait_for_server()
+       client.wait_for_server(rospy.Duration(20))
+       print('connected')
        G=FollowJointTrajectoryGoal()
        
        G.trajectory.joint_names.append("head_1_joint")
        G.trajectory.joint_names.append("head_2_joint")
       
-       print(len(G.trajectory.joint_names))
     
-       point=[0]
-       position=[0.0 , 0.0]
-       print(len(point))
-       print(len(position))
        msg=JointTrajectoryPoint()
        G.trajectory.points.append(msg)
        print(len(G.trajectory.points))
-       G.trajectory.points[0].positions.append(-0.6)
-       G.trajectory.points[0].positions.append(0.0)
+       G.trajectory.points[0].positions.append(0.6)
+       G.trajectory.points[0].positions.append(0.3)
        print(len(G.trajectory.points[0].positions))
        
        G.trajectory.points[0].velocities.append(0.01)

@@ -16,10 +16,10 @@
     <param name="a_j1" value="$(arg a_j1)" />
     <param name="a_j2_s1" value="$(arg a_j2_s1)" />
     <param name="a_j2_s2" value="$(arg a_j2_s2)" />
-    <param name="a_j2_s2" value="$(arg a_j2_s2)" />
+    <param name="a_j2_s3" value="$(arg a_j2_s3)" />
     
     <node pkg="people_perception" type="PeopleDetection_actionserver.py" name="peopleperception_server" output="screen"/>
-    <node pkg="people_perception" type="PeopleDetection_actionclient.py" name="peopleperception_client" output="screen"/>
+    <!-- <node pkg="people_perception" type="PeopleDetection_actionclient.py" name="peopleperception_client" output="screen"/> -->
     
    
 </launch>
