@@ -9,31 +9,30 @@ import subprocess
 import cvlib as cv
 import os
 
+threshold=150
             
 def PeopleDetection():
-    image = cv2.imread("/root/images/table5.jpg")
+    image1 = cv2.imread("/root/images/20.jpeg")
 
-    # apply face detection
-    faces, confidences = cv.detect_face(image)
-
-    #print(faces)
-    #print(confidences)
-
+    #crop possibile
+    faces1, confidences1 = cv.detect_face(image1)
+    counter=len(confidences1)
     # loop through detected faces
-    for face,conf in zip(faces,confidences):
+    for face,conf in zip(faces1,confidences1):
 
         (startX,startY) = face[0],face[1]
         (endX,endY) = face[2],face[3]
-
-        # draw rectangle over face
-        cv2.rectangle(image, (startX,startY), (endX,endY), (0,255,0), 2)
+        if (endY-startY)>threshold:
+           cv2.rectangle(image1, (startX,startY), (endX,endY), (0,255,0), 2)
+        else:
+            counter-=1
 
     # save output
-    cv2.imwrite("/root/images/P10.jpg", image)
-    if len(confidences)==0:
-        return 0
-    else:
-        return len(confidences)
+
+    cv2.imwrite("/root/images/Inew.jpeg", image1)
+    if counter>1:
+        counter=1
+    return counter
 
 if __name__ == '__main__':
 
