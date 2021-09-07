@@ -12,7 +12,8 @@ if __name__ == "__main__":
         client = actionlib.SimpleActionClient('people_detection', PeopleCounter2Action)
         client.wait_for_server()
         goal = people_perception.msg.PeopleCounter2Goal()
-        client.send_goal("t1")
+        goal.table_poi="t1"
+        client.send_goal(goal)
         client.wait_for_result()
         resp=client.get_result()
         print(resp)

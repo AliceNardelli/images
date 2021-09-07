@@ -16,7 +16,6 @@ import people_perception.msg
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 import control_msgs.msg 
 from trajectory_msgs.msg import JointTrajectoryPoint
-from statistics import mode
 from sciroc_navigation.srv import GoToPOI 
 
 
@@ -25,20 +24,7 @@ _as=None
 state=1
 counter=0
 go_to_poi=None
-#stato1
-#navigo
-#change state(2) 
 
-#stato2
-#image aq
-#navigo
-#change3
-
-#stato3
-#im acq
-#navigo
-#testA dritta
-#break
 
 def crop(image):
        global state
@@ -53,10 +39,32 @@ def crop(image):
        else:
               image=image[0:width, th2:height] 
        return image
-def  navigation():
-    print("nb")
+
+def  navigation(table):
+    global state
+    if state==1:
+         poi_=table+"a"
+    elif state==2:
+         poi_=table+"b"
+    else:
+         poi_=table
+
+    rospy.wait_for_service('go_to_poi_service')
+
+    try:
+		
+	    go_to_poi = rospy.ServiceProxy('go_to_poi_service', GoToPOI)
+	    result = go_to_poi(poi_)
+
+	    if (result.result == 'goal reached'):
+		    print (result.result )
+	    else: 
+		    print ('Point of interest [{poi}] does not exist').format(poi=poi_)
+    except rospy.ServiceException as e:
+	    print ('Service call failed: {e}'.format(e=e))
 
 def image_acquisition():
+      
        global counter
        global state
        
@@ -67,8 +75,10 @@ def image_acquisition():
        detected_people=[0, 0, 0]
        for i in range(1,4):
               #cambiare topic?
+              
               msg = rospy.wait_for_message('/xtion/rgb/image_raw', Image)
               image = bridge.imgmsg_to_cv2(msg, desired_encoding= "bgr8")
+             
               #image=crop(image)
               s="/root/images/I.jpg"
               cv2.imwrite(s, image)        
@@ -77,12 +87,13 @@ def image_acquisition():
                                    stdout=subprocess.PIPE,
                                    )
               
-              detected_people[i]= int(child_program.communicate()[0])
-              moda=mode(detected_people)
-              print(detected_people) 
+              detected_people[i-1]= int(child_program.communicate()[0])
+       
+       moda=max(set(detected_people),key=detected_people.count)
+       
 
        if moda>2:
-           moda=2
+             moda=2
 
        counter=counter+moda
        
@@ -119,10 +130,10 @@ def change_state(new_state):
       G.trajectory.header.stamp =rospy.Duration(2)+rospy.Time.now()
       client.send_goal(G)
       client.wait_for_result()
-      #print("head moved")
+      
       
       state=new_state
-      #print(state)
+      
 
 
                
@@ -131,18 +142,21 @@ def action_clbk(req):
        global _as, client,state,counter
        state=1
        counter=0
-       _res = people_perception.msg.PeopleCounterResult()
+       _res = people_perception.msg.PeopleCounter2Result()
        while True:
               if state==1:
-                  navigation()
+                  
+                  navigation(req.table_poi)
                   change_state(2)
               elif state==2:
+                  
                   image_acquisition()
-                  navigation()
+                  navigation(req.table_poi)
                   change_state(3)
               elif state==3:
+                 
                   image_acquisition()
-                  navigation()
+                  navigation(req.table_poi)
                   change_state(4)
               else:
                   print("DONE")
@@ -158,7 +172,7 @@ def action_clbk(req):
 if __name__ == '__main__':
 
        rospy.init_node('talker', anonymous=True)
-       _as = actionlib.SimpleActionServer('people_detection', people_perception.msg.PeopleCounterAction,execute_cb=action_clbk, auto_start=False) 
+       _as = actionlib.SimpleActionServer('people_detection', people_perception.msg.PeopleCounter2Action,execute_cb=action_clbk, auto_start=False) 
        _as.start() 
        client = actionlib.SimpleActionClient('/head_controller/follow_joint_trajectory', control_msgs.msg.FollowJointTrajectoryAction) 
        go_to_poi = rospy.ServiceProxy('go_to_poi_service', GoToPOI)
