@@ -9,13 +9,17 @@ import subprocess
 import cvlib as cv
 import os
 
+
 threshold=0
-            
+
+ 
+
 def PeopleDetection():
     image1 = cv2.imread("/root/images/I.jpg")
-
+    
     #crop possibile
     faces1, confidences1 = cv.detect_face(image1,0.18,enable_gpu=True)
+    #print(confidences1)
     counter=len(confidences1)
     # loop through detected faces
     for face,conf in zip(faces1,confidences1):
@@ -30,7 +34,10 @@ def PeopleDetection():
 
     # save output
 
+
     cv2.imwrite("/root/images/Inew.jpg", image1)
+
+
     if counter>2:
         counter=2
     return counter
