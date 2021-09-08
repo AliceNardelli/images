@@ -30,7 +30,7 @@ def PeopleDetection():
 
     # save output
 
-    cv2.imwrite("/root/images/I.jpg", image1)
+    cv2.imwrite("/root/images/Inew.jpg", image1)
     if counter>2:
         counter=2
     return counter
