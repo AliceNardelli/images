@@ -4,8 +4,8 @@
 
 
 
-    <arg name="th1" default= "100"/>
-    <arg name="th2" default= "150"/>
+    <arg name="th1" default= "0"/>
+    <arg name="th2" default= "0"/>
     <arg name="a_j1" default= "0"/>
     <arg name="a_j2_s1" default= "0"/>
     <arg name="a_j2_s2" default= "0.6"/>
@@ -18,7 +18,7 @@
     <param name="a_j2_s2" value="$(arg a_j2_s2)" />
     <param name="a_j2_s3" value="$(arg a_j2_s3)" />
     
-    <node pkg="people_perception" type="PeopleDetection_actionserver.py" name="peopleperception_server" output="screen"/>
+    <node pkg="people_perception" type="PeoplePerceptionServer.py" name="peopleperception_server" output="screen"/>
     <!-- <node pkg="people_perception" type="PeopleDetection_actionclient.py" name="peopleperception_client" output="screen"/> -->
     
    

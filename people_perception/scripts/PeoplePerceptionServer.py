@@ -43,9 +43,9 @@ def crop(image):
 def  navigation(table):
     global state
     if state==1:
-         poi_=table+"a"
+         poi_=table+"_1people"
     elif state==2:
-         poi_=table+"b"
+         poi_=table+"_2people"
     else:
          poi_=table
 
