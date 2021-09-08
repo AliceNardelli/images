@@ -15,7 +15,7 @@ threshold=0
  
 
 def PeopleDetection():
-    image1 = cv2.imread("/root/images/I.jpg")
+    image1 = cv2.imread("/root/images/1.jpeg")
     
     #crop possibile
     faces1, confidences1 = cv.detect_face(image1,0.18,enable_gpu=True)
@@ -35,7 +35,7 @@ def PeopleDetection():
     # save output
 
 
-    cv2.imwrite("/root/images/Inew.jpg", image1)
+    cv2.imwrite("/root/images/Inew.jpeg", image1)
 
 
     if counter>2:
