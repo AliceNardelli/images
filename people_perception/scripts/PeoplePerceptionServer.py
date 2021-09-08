@@ -43,9 +43,9 @@ def crop(image):
 def  navigation(table):
     global state
     if state==1:
-         poi_=table+"_1people"
+         poi_=table+"_people1"
     elif state==2:
-         poi_=table+"_2people"
+         poi_=table+"_people2"
     else:
          poi_=table
 
@@ -105,7 +105,7 @@ def change_state(new_state):
       global client
       
       if new_state==2 or new_state==3:
-            angle1=-0.1
+            angle1=-0.3
             angle2=0.0
         
       else:
