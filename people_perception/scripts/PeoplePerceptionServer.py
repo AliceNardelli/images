@@ -105,8 +105,8 @@ def change_state(new_state):
       global client
       
       if new_state==2 or new_state==3:
-            angle1=-0.3
-            angle2=0.0
+            angle2=-0.3
+            angle1=0.0
         
       else:
             angle1=0.0
