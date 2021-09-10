@@ -36,7 +36,9 @@ def PeopleDetection():
 
 
     cv2.imwrite("/root/images/Inew.jpg", image1)
-
+    cv2.imshow("peopleperc",image1)
+    cv2.waitKey(5000)
+    
 
     if counter>2:
         counter=2
